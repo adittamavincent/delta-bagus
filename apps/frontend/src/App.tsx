@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import { SiteHeader } from "./components/SiteHeader";
+import { api } from "./lib/api";
+import SpacemanPage from "./SpacemanPage";
 
 const BOARD_SIZE = 25;
 
@@ -14,17 +17,7 @@ type Round = {
   mines?: number[];
 };
 
-async function api<T>(path: string, options?: RequestInit): Promise<T> {
-  const response = await fetch(`/api${path}`, {
-    ...options,
-    headers: { "Content-Type": "application/json", ...options?.headers },
-  });
-  const result = await response.json();
-  if (!response.ok) throw new Error(result.error ?? "Something went wrong. Try again.");
-  return result as T;
-}
-
-function App() {
+function HiddenGemsPage() {
   const [balance, setBalance] = useState(1_000);
   const [stake, setStake] = useState(25);
   const [mineCount, setMineCount] = useState(5);
@@ -91,11 +84,7 @@ function App() {
 
   return (
     <main className="page">
-      <header className="topbar">
-        <a className="brand" href="/" aria-label="Playhouse home"><span className="brand-mark">p</span>playhouse</a>
-        <span className="demo-label"><i /> FREE-PLAY DEMO</span>
-        <div className="balance"><span>DEMO CREDITS</span><strong>{balance.toLocaleString()}</strong></div>
-      </header>
+      <SiteHeader balance={balance} />
 
       <section className="game-layout" aria-labelledby="game-title">
         <div className="intro">
@@ -146,4 +135,40 @@ function App() {
   );
 }
 
-export default App;
+function MenuPage() {
+  return (
+    <main className="page">
+      <SiteHeader />
+      <section className="menu-content">
+        <p className="eyebrow">THE PLAYHOUSE ARCADE</p>
+        <h1>Pick your <em>game.</em></h1>
+        <p className="menu-copy">Two ways to play. Demo credits only, with no cash value.</p>
+        <div className="menu-games">
+          <a className="menu-game menu-mines" href="/">
+            <span className="menu-game-number">01 / PUZZLE</span>
+            <span className="menu-game-art" aria-hidden="true">✦</span>
+            <strong>Hidden Gems</strong>
+            <span className="menu-game-description">Pick gems. Avoid the bombs. Choose your moment to collect.</span>
+            <span className="menu-game-cta">Play Hidden Gems <b>↗</b></span>
+          </a>
+          <a className="menu-game menu-space" href="/spaceman">
+            <span className="menu-game-number">02 / CRASH</span>
+            <span className="menu-game-art" aria-hidden="true">◉</span>
+            <strong>Spaceman</strong>
+            <span className="menu-game-description">Watch the multiplier climb. Cash out before the flight ends.</span>
+            <span className="menu-game-cta">Play Spaceman <b>↗</b></span>
+            <span className="menu-game-rtp">95% RTP · 5% THEORETICAL HOUSE EDGE</span>
+          </a>
+        </div>
+      </section>
+      <footer><span>PLAYHOUSE / GAME MENU</span><span>DEMO CREDITS ONLY · NO CASH VALUE</span></footer>
+    </main>
+  );
+}
+
+export default function App() {
+  const path = window.location.pathname.replace(/\/+$/, "") || "/";
+  if (path === "/menu") return <MenuPage />;
+  if (path === "/spaceman") return <SpacemanPage />;
+  return <HiddenGemsPage />;
+}

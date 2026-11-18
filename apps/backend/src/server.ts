@@ -1,10 +1,14 @@
 import express, { type Response } from "express";
 import {
   cashOut,
+  cashOutSpaceman,
   createPlayer,
+  getSpacemanStatus,
   refillDemoCredits,
   revealTile,
+  startSpaceman,
   startRound,
+  type SpacemanRound,
 } from "./game.js";
 
 const app = express();
@@ -45,6 +49,27 @@ app.post("/api/mines/:roundId/cashout", (request, response) => {
   });
 });
 
+app.post("/api/spaceman/start", (request, response) => {
+  respondWithGameAction(response, () => {
+    const round = startSpaceman(player, Number(request.body?.stake));
+    return publicSpacemanRound(round, player.balance);
+  });
+});
+
+app.get("/api/spaceman/:roundId/status", (request, response) => {
+  respondWithGameAction(response, () => {
+    const round = getSpacemanStatus(player, request.params.roundId);
+    return publicSpacemanRound(round, player.balance);
+  });
+});
+
+app.post("/api/spaceman/:roundId/cashout", (request, response) => {
+  respondWithGameAction(response, () => {
+    const round = cashOutSpaceman(player, request.params.roundId);
+    return publicSpacemanRound(round, player.balance);
+  });
+});
+
 app.post("/api/demo/refill", (_request, response) => {
   respondWithGameAction(response, () => {
     refillDemoCredits(player);
@@ -61,6 +86,18 @@ function publicRound(round: ReturnType<typeof startRound>, balance: number) {
     stake: round.stake,
     mineCount: round.mineCount,
     revealed: [...round.revealed],
+    status: round.status,
+    multiplier: round.multiplier,
+    payout: round.payout,
+    balance,
+  };
+}
+
+function publicSpacemanRound(round: SpacemanRound, balance: number) {
+  return {
+    roundId: round.id,
+    stake: round.stake,
+    startedAt: round.startedAt,
     status: round.status,
     multiplier: round.multiplier,
     payout: round.payout,

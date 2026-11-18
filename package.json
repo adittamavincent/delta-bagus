@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "pnpm --parallel --filter @playhouse/frontend --filter @playhouse/backend dev",
     "build": "pnpm --filter @playhouse/frontend build && pnpm --filter @playhouse/backend build",
+    "test": "pnpm --filter @playhouse/backend test",
     "start": "pnpm --filter @playhouse/backend start"
   }
 }

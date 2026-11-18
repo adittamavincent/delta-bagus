@@ -1,6 +1,6 @@
 # Playhouse
 
-A pnpm monorepo for a free-play arcade prototype. The current game, **Hidden Gems**, is a Mines-style game using nonredeemable demo credits only.
+A pnpm monorepo for a free-play arcade prototype. Current games: **Hidden Gems** and a **Spaceman-style** crash game, both using nonredeemable demo credits only.
 
 ## Structure
 
