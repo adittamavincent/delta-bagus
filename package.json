@@ -1,0 +1,9 @@
+{
+  "name": "playhouse",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --parallel --filter @playhouse/frontend --filter @playhouse/backend dev",
+    "build": "pnpm --filter @playhouse/frontend build && pnpm --filter @playhouse/backend build",
+    "start": "pnpm --filter @playhouse/backend start"
+  }
+}
